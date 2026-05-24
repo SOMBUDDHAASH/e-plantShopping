@@ -1,16 +1,21 @@
-import React, { useState } from 'react'; // Cleaned: Removed unused useEffect import
-import { useDispatch } from 'react-redux'; // REQ: Import dispatch hook
-import { addItem } from './CartSlice'; // REQ: Import addItem action
-import './ProductList.css'
+import React, { useState } from 'react'; 
+import { useDispatch, useSelector } from 'react-redux'; // Task 4 REQ: Import dispatch and selector hooks
+import { addItem } from './CartSlice'; // Task 1 & 4 REQ: Import addItem action
+import './ProductList.css';
 import CartItem from './CartItem';
 
 function ProductList({ onHomeClick }) {
-    const dispatch = useDispatch(); // Initialize the dispatch function
+    const dispatch = useDispatch(); 
     const [showCart, setShowCart] = useState(false);
-    // Cleaned: Removed unused showPlants state declaration to resolve warning
-
-    // Task 1 REQ: Track which products have been added to the cart
     const [addedToCart, setAddedToCart] = useState({});
+
+    // Task 4 REQ: Access the Redux store to retrieve item listings
+    const cartItems = useSelector(state => state.cart.items);
+
+    // Task 4 REQ: Retrieve and display the total quantity of items currently in the cart
+    const calculateTotalQuantity = () => { 
+        return cartItems ? cartItems.reduce((total, item) => total + item.quantity, 0) : 0; 
+    };
 
     const plantsArray = [
         {
@@ -204,18 +209,18 @@ function ProductList({ onHomeClick }) {
         justifyContent: 'space-between',
         alignItems: 'center',
         fontSize: '20px',
-    }
+    };
     const styleObjUl = {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         width: '1100px',
-    }
+    };
     const styleA = {
         color: 'white',
         fontSize: '30px',
         textDecoration: 'none',
-    }
+    };
 
     const handleHomeClick = (e) => {
         e.preventDefault();
@@ -227,20 +232,14 @@ function ProductList({ onHomeClick }) {
         setShowCart(true); 
     };
     
-    const handlePlantsClick = (e) => {
+    const handleNavigationToggle = (e) => {
         e.preventDefault();
-        // Fixed: Retained functionality while referencing localized route toggles if parent depends on it
-        setShowCart(false); 
-    };
-
-    const handleContinueShopping = (e) => {
-        e.preventDefault();
-        setShowCart(false);
+        setShowCart(false); // Reset to show the main grid items view layout
     };
 
     // Task 1 REQ: Handle Add To Cart action with local state update and dispatch
     const handleAddToCart = (product) => {
-        dispatch(addItem(product)); // Dispatching info to Redux CartSlice
+        dispatch(addItem(product)); // Task 4 REQ: Use addItem action to update slice array
         
         setAddedToCart((prevState) => ({
             ...prevState,
@@ -263,10 +262,12 @@ function ProductList({ onHomeClick }) {
                     </div>
                 </div>
                 <div style={styleObjUl}>
-                    <div> <a href="#" onClick={(e) => handlePlantsClick(e)} style={styleA}>Plants</a></div>
+                    <div> <a href="#" onClick={(e) => handleNavigationToggle(e)} style={styleA}>Plants</a></div>
                     <div> 
                         <a href="#" onClick={(e) => handleCartClick(e)} style={styleA}>
                             <h1 className='cart'>
+                                {/* Task 4 REQ: Render the count directly inside the navigation container */}
+                                <span className="cart-quantity-count">{calculateTotalQuantity()}</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" id="IconChangeColor" height="68" width="68">
                                     <rect width="156" height="156" fill="none"></rect>
                                     <circle cx="80" cy="216" r="12"></circle>
@@ -314,7 +315,7 @@ function ProductList({ onHomeClick }) {
                     ))}
                 </div>
             ) : (
-                <CartItem onContinueShopping={handleContinueShopping} />
+                <CartItem onContinueShopping={handleNavigationToggle} />
             )}
         </div>
     );
