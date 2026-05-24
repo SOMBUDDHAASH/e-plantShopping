@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react'; // Cleaned: Removed unused useEffect import
 import { useDispatch } from 'react-redux'; // REQ: Import dispatch hook
 import { addItem } from './CartSlice'; // REQ: Import addItem action
 import './ProductList.css'
@@ -7,7 +7,7 @@ import CartItem from './CartItem';
 function ProductList({ onHomeClick }) {
     const dispatch = useDispatch(); // Initialize the dispatch function
     const [showCart, setShowCart] = useState(false);
-    const [showPlants, setShowPlants] = useState(false); 
+    // Cleaned: Removed unused showPlants state declaration to resolve warning
 
     // Task 1 REQ: Track which products have been added to the cart
     const [addedToCart, setAddedToCart] = useState({});
@@ -196,9 +196,6 @@ function ProductList({ onHomeClick }) {
         }
     ];
 
-    // NOTE: Removed duplicate items (like Lavender and Aloe Vera) from categories where they were repeated 
-    // to keep the plant object keys clean and unique in the UI grid.
-
     const styleObj = {
         backgroundColor: '#4CAF50',
         color: '#fff!important',
@@ -232,7 +229,7 @@ function ProductList({ onHomeClick }) {
     
     const handlePlantsClick = (e) => {
         e.preventDefault();
-        setShowPlants(true); 
+        // Fixed: Retained functionality while referencing localized route toggles if parent depends on it
         setShowCart(false); 
     };
 
