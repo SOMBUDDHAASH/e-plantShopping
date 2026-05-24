@@ -9,27 +9,52 @@ const CartItem = ({ onContinueShopping }) => {
 
   // Calculate total amount for all products in the cart
   const calculateTotalAmount = () => {
- 
+    let total = 0;
+    cart.forEach((item) => {
+      // Instruction: Convert cost string to number using parseFloat(item.cost.substring(1))
+      const numericCost = parseFloat(item.cost.substring(1));
+      total += numericCost * item.quantity;
+    });
+    return total;
   };
 
   const handleContinueShopping = (e) => {
-   
+    // Instruction: Call the onContinueShopping(e) function passed from the parent component
+    if (onContinueShopping) {
+      onContinueShopping(e);
+    }
   };
 
-
+  // Instruction: Add code to alert the user for future reference
+  const handleCheckoutShopping = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    alert('Functionality to be added for future reference');
+  };
 
   const handleIncrement = (item) => {
+    // Instruction: Dispatch updateQuantity to increase item's quantity by 1
+    dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
   };
 
   const handleDecrement = (item) => {
-   
+    // Instruction: If item's quantity > 1, decrease by 1. Else, dispatch removeItem.
+    if (item.quantity > 1) {
+      dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 }));
+    } else {
+      dispatch(removeItem(item.name));
+    }
   };
 
   const handleRemove = (item) => {
+    // Instruction: Dispatch the removeItem action to delete the item from the cart
+    dispatch(removeItem(item.name));
   };
 
   // Calculate total cost based on quantity for an item
   const calculateTotalCost = (item) => {
+    // Instruction: Extract numeric value using substring(1) before performing multiplication
+    const numericCost = parseFloat(item.cost.substring(1));
+    return numericCost * item.quantity;
   };
 
   return (
@@ -57,12 +82,10 @@ const CartItem = ({ onContinueShopping }) => {
       <div className="continue_shopping_btn">
         <button className="get-started-button" onClick={(e) => handleContinueShopping(e)}>Continue Shopping</button>
         <br />
-        <button className="get-started-button1">Checkout</button>
+        <button className="get-started-button1" onClick={(e) => handleCheckoutShopping(e)}>Checkout</button>
       </div>
     </div>
   );
 };
 
 export default CartItem;
-
-
